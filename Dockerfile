@@ -15,5 +15,6 @@ RUN CGO_ENABLED=0 go build -ldflags "-s -w \
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /mihomo-web /usr/local/bin/mihomo-web
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["mihomo-web"]
+CMD ["--listen", ":80"]
