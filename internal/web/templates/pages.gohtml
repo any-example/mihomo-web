@@ -1,0 +1,232 @@
+{{define "login"}}
+<section class="login-card">
+  <p class="eyebrow">Access Gate</p>
+  <h1>输入面板访问 Token</h1>
+  <form id="login-form" class="stack">
+    <input class="input" name="token" type="password" autocomplete="current-password" placeholder="ui secret">
+    <button class="primary" type="submit">进入面板</button>
+  </form>
+  <p class="muted">如果启动时未设置 <code>--ui-secret</code>，此页面不会出现。</p>
+</section>
+{{end}}
+
+{{define "overview"}}
+<header class="hero">
+  <p class="eyebrow">Runtime Console</p>
+  <h1>状态概览</h1>
+  <p class="muted">实时流量、内存与连接监控。</p>
+</header>
+<section class="grid cards">
+  <article class="card"><span class="label">上传总量</span><strong id="upload-total">--</strong></article>
+  <article class="card"><span class="label">下载总量</span><strong id="download-total">--</strong></article>
+  <article class="card"><span class="label">活动连接</span><strong id="active-connections">--</strong></article>
+  <article class="card chart-card"><span class="label">上传速率</span><strong id="traffic-up">--</strong><div class="chart-wrap" id="chart-up"></div></article>
+  <article class="card chart-card"><span class="label">下载速率</span><strong id="traffic-down">--</strong><div class="chart-wrap" id="chart-down"></div></article>
+  <article class="card chart-card"><span class="label">内存</span><strong id="memory-inuse">--</strong><div class="chart-wrap" id="chart-mem"></div></article>
+</section>
+{{end}}
+
+{{define "proxies"}}
+<header class="proxy-toolbar">
+  <div class="proxy-tabs" id="proxy-tabs">
+    <button class="proxy-tab active" type="button" data-proxy-view="groups">代理 <span class="proxy-tab-count" id="proxy-group-count">0</span></button>
+    <button class="proxy-tab" type="button" data-proxy-view="providers">提供商 <span class="proxy-tab-count" id="proxy-provider-count">0</span></button>
+  </div>
+  <div class="proxy-tools">
+    <input class="input proxy-search" id="proxy-search" placeholder="查找">
+    <button class="ghost proxy-filter-button proxy-icon-button" type="button" data-refresh="proxies" aria-label="刷新代理列表"></button>
+  </div>
+</header>
+
+<section class="proxy-view active" data-proxy-panel="groups">
+  <div id="proxies-view" class="stack">加载中...</div>
+</section>
+
+<section class="proxy-view" data-proxy-panel="providers">
+  <div id="proxy-providers" class="stack">加载中...</div>
+</section>
+{{end}}
+
+{{define "rules"}}
+<header class="proxy-toolbar">
+  <div class="proxy-tabs" id="rules-tabs">
+    <button class="proxy-tab active" type="button" data-rules-view="providers">提供商<span class="proxy-tab-count" id="rule-provider-count">0</span></button>
+    <button class="proxy-tab" type="button" data-rules-view="list">列表<span class="proxy-tab-count" id="rule-list-count">0</span></button>
+  </div>
+  <div class="proxy-tools">
+    <input class="input proxy-search" id="rule-filter" placeholder="搜索类型、规则、代理">
+    <button class="ghost" id="update-all-rule-providers">全部更新</button>
+    <button class="ghost proxy-filter-button proxy-icon-button" type="button" data-refresh="rules" aria-label="刷新规则"></button>
+  </div>
+</header>
+
+<section class="proxy-view active" data-rules-panel="providers">
+  <div id="rule-providers" class="stack">加载中...</div>
+</section>
+
+<section class="proxy-view" data-rules-panel="list">
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>类型</th><th>规则</th><th>代理</th></tr></thead><tbody id="rules-body"></tbody></table></div>
+</section>
+{{end}}
+
+{{define "connections"}}
+<header class="connection-toolbar">
+  <div class="connection-left-tools">
+    <div class="proxy-tabs connection-tabs" id="connection-tabs">
+      <button class="proxy-tab active" type="button" data-connection-view="active">活动 <span class="proxy-tab-count" id="connection-active-count">0</span></button>
+      <button class="proxy-tab" type="button" data-connection-view="closed">已断开 <span class="proxy-tab-count" id="connection-closed-count">0</span></button>
+    </div>
+    <select class="input connection-type-filter" id="connection-type-filter">
+      <option value="all">全部</option>
+      <option value="tcp">TCP</option>
+      <option value="udp">UDP</option>
+      <option value="tun">TUN</option>
+    </select>
+  </div>
+  <div class="connection-right-tools">
+    <input class="input proxy-search connection-search" id="connection-filter" placeholder="查找">
+    <button class="icon-action close-icon connection-close" id="close-connections" type="button" aria-label="关闭所有活动连接" title="关闭所有活动连接"><span aria-hidden="true">×</span></button>
+    <span class="connection-action-separator" aria-hidden="true"></span>
+    <button class="icon-action columns-icon" id="connection-columns-toggle" type="button" aria-label="配置展示列" title="配置展示列"><span aria-hidden="true">⚙</span></button>
+    <button class="icon-action refresh-icon" id="connection-refresh" type="button" aria-label="刷新连接" title="刷新连接"></button>
+    <section class="connection-columns-popover" id="connection-columns-popover" hidden>
+      <div class="connection-columns-head"><strong>展示列</strong><button class="ghost action-button" id="connection-columns-reset" type="button">恢复默认</button></div>
+      <div class="connection-columns-list" id="connection-columns-list"></div>
+      <div class="connection-columns-actions">
+        <button class="ghost action-button" id="connection-columns-cancel" type="button">取消</button>
+        <button class="primary" id="connection-columns-confirm" type="button">确定</button>
+      </div>
+    </section>
+  </div>
+</header>
+<section class="connection-columns-popover" id="connection-columns-popover" hidden>
+  <div class="connection-columns-head"><strong>展示列</strong><button class="ghost action-button" id="connection-columns-reset" type="button">恢复默认</button></div>
+  <div class="connection-columns-list" id="connection-columns-list"></div>
+  <div class="connection-columns-actions">
+    <button class="ghost action-button" id="connection-columns-cancel" type="button">取消</button>
+    <button class="primary" id="connection-columns-confirm" type="button">确定</button>
+  </div>
+</section>
+<section class="connection-panel">
+  <div id="connections-view" class="connection-table-shell">加载中...</div>
+</section>
+<button class="connection-float" id="connection-pause" type="button" aria-label="暂停刷新">Ⅱ</button>
+{{end}}
+
+{{define "logs"}}
+<header class="page-head"><h1>日志</h1><button class="ghost" id="clear-logs">清空</button></header>
+<section class="toolbar"><select class="input" id="log-level"><option>debug</option><option selected>info</option><option>warning</option><option>error</option></select><input class="input" id="log-filter" placeholder="关键词过滤"><button class="ghost" id="pause-logs">暂停</button></section>
+<pre id="logs-view" class="logs"></pre>
+{{end}}
+
+{{define "config"}}
+<header class="page-head"><h1>配置</h1><button class="ghost" data-refresh="configs">刷新</button></header>
+<form id="config-form" class="stack settings-stack">
+  <section class="panel settings-panel">
+    <div class="settings-title"><h2>常规</h2></div>
+    <div class="config-grid config-grid-two">
+      <label><span class="label">HTTP Port</span><input class="input" name="port" type="number" min="0"></label>
+      <label><span class="label">SOCKS5 Port</span><input class="input" name="socks-port" type="number" min="0"></label>
+      <label><span class="label">Mixed Port</span><input class="input" name="mixed-port" type="number" min="0"></label>
+      <label><span class="label">Redir Port</span><input class="input" name="redir-port" type="number" min="0"></label>
+      <label><span class="label">Mode</span><select class="input" name="mode"><option value="rule">Rule</option><option value="global">Global</option><option value="direct">Direct</option></select></label>
+      <label><span class="label">Log Level</span><select class="input" name="log-level"><option value="debug">Debug</option><option value="info">Info</option><option value="warning">Warning</option><option value="error">Error</option><option value="silent">Silent</option></select></label>
+      <label class="switch-field"><span class="switch-label">允许局域网连接</span><input type="checkbox" name="allow-lan"><span class="switch-ui"></span></label>
+      <label class="switch-field"><span class="switch-label">SNI 嗅探</span><input type="checkbox" data-path="sniffer.enable" data-fallback-paths="sniffing"><span class="switch-ui"></span></label>
+      <label class="switch-field"><span class="switch-label">IPv6</span><input type="checkbox" name="ipv6"><span class="switch-ui"></span></label>
+    </div>
+  </section>
+
+  <section class="panel settings-panel">
+    <div class="settings-title"><h2>TUN</h2></div>
+    <div class="config-grid config-grid-two">
+      <label class="switch-field"><span class="switch-label">开启 TUN 转发</span><input type="checkbox" data-path="tun.enable"><span class="switch-ui"></span></label>
+      <label><span class="label">TUN IP Stack</span><select class="input" data-path="tun.stack"><option value="gvisor">gVisor</option><option value="system">System</option><option value="mixed">Mixed</option></select></label>
+      <label><span class="label">Device Name</span><input class="input" data-path="tun.device" type="text"></label>
+      <label><span class="label">Interface Name</span><input class="input" data-path="tun.interface-name" type="text"></label>
+    </div>
+    <div class="settings-actions">
+      <button class="primary" type="submit">保存运行配置</button>
+    </div>
+  </section>
+</form>
+
+<section class="panel settings-panel danger-zone">
+  <div class="settings-title"><h2>管理</h2></div>
+  <div class="settings-actions-grid">
+    <article class="action-tile"><span class="label">Reload</span><button class="ghost action-button" data-action="/configs?force=true" data-method="PUT" data-body='{"path":"","payload":""}'>重载配置文件</button></article>
+    <article class="action-tile"><span class="label">Geo Databases</span><button class="ghost action-button" data-action="/upgrade/geo" data-method="POST" data-body='{"path":"","payload":""}'>更新 GEO 数据库</button></article>
+    <article class="action-tile"><span class="label">Dashboard UI</span><button class="ghost action-button" data-action="/upgrade/ui" data-method="POST" data-body='{"path":"","payload":""}'>更新面板 UI</button></article>
+    <article class="action-tile"><span class="label">FakeIP</span><button class="ghost action-button" data-action="/cache/fakeip/flush" data-method="POST">清空 FakeIP 数据库</button></article>
+    <article class="action-tile"><span class="label">Restart</span><button class="ghost action-button" data-action="/restart" data-method="POST" data-body='{"path":"","payload":""}'>重启核心</button></article>
+    <article class="action-tile"><span class="label">Upgrade</span><button class="ghost action-button danger-text" data-action="/upgrade" data-method="POST" data-body='{"path":"","payload":""}'>更新核心</button></article>
+  </div>
+</section>
+
+<section class="panel settings-panel">
+  <div class="settings-title"><h2>面板</h2></div>
+  <div class="config-grid config-grid-two panel-config-grid">
+    <label><span class="label">语言</span><select class="input" id="panel-language"><option value="zh-CN">简体中文</option></select></label>
+    <div>
+      <span class="label">流量图样式</span>
+      <div class="chart-style-picker" id="chart-style-picker">
+        <button type="button" class="chart-style-option" data-chart-style="ocean" aria-label="Ocean"></button>
+        <button type="button" class="chart-style-option" data-chart-style="sunset" aria-label="Sunset"></button>
+        <button type="button" class="chart-style-option" data-chart-style="mint" aria-label="Mint"></button>
+        <button type="button" class="chart-style-option" data-chart-style="candy" aria-label="Candy"></button>
+      </div>
+    </div>
+    <div class="backend-status">
+      <span class="label">当前后端</span>
+      <strong id="backend-current">-</strong>
+      <p class="muted" id="backend-mode"></p>
+    </div>
+  </div>
+  <div class="settings-actions">
+    <a class="ghost action-button" href="/backends">管理 mihomo 后端</a>
+  </div>
+</section>
+{{end}}
+
+{{define "backends"}}
+<header class="page-head"><h1>mihomo 后端</h1><button class="ghost" id="backend-create-toggle">新增后端</button></header>
+<div class="backend-toast" id="backend-toast" hidden aria-live="polite"></div>
+
+<section class="panel">
+  <div class="section-title"><h2>当前激活</h2><span class="muted">启动参数优先，其次使用本地激活配置</span></div>
+  <div class="backend-status backend-status-panel">
+    <strong id="backend-current">-</strong>
+    <p class="muted" id="backend-mode"></p>
+  </div>
+</section>
+
+<section class="panel backend-editor" id="backend-editor-panel" hidden>
+  <div class="settings-title"><h2 id="backend-editor-title">新增后端</h2></div>
+  <form id="backend-manager-form" class="stack settings-stack">
+    <input type="hidden" name="id">
+    <div class="config-grid config-grid-two backend-form-grid">
+      <label><span class="label">名称</span><input class="input" name="name" type="text" placeholder="例如：家里 NAS"></label>
+      <label><span class="label">Controller URL</span><input class="input" name="url" type="url" placeholder="http://127.0.0.1:9090"></label>
+      <label><span class="label">Secret</span><input class="input" name="secret" type="password" placeholder="留空表示无密钥"></label>
+    </div>
+    <div class="settings-actions">
+      <button class="primary" type="submit">保存后端</button>
+      <button class="ghost" type="button" id="backend-editor-cancel">取消</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>已保存后端</h2></div>
+  <div id="backend-list" class="stack">加载中...</div>
+</section>
+{{end}}
+
+{{define "about"}}
+<header class="hero"><p class="eyebrow">About</p><h1>mihomo-web</h1></header>
+<section class="grid cards">
+  <article class="card"><span class="label">版本</span><strong>{{.Build.Version}}</strong></article>
+  <article class="card"><span class="label">mihomo 核心</span><strong id="mihomo-core-version">--</strong></article>
+  <article class="card"><span class="label">模式</span><strong>{{if .ReadOnly}}只读{{else}}读写{{end}}</strong></article>
+</section>
+{{end}}

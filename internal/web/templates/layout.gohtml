@@ -1,0 +1,52 @@
+{{define "layout"}}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}} · mihomo-web</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script>
+    window.MIHOMO_WEB = {{.ClientConfig}};
+  </script>
+</head>
+<body>
+  <div class="shell {{if eq .Page "login"}}shell-login{{end}}">
+    {{if ne .Page "login"}}
+    <header class="nav">
+      <a class="brand" href="/proxies">
+        <span class="brand-mark"></span>
+        <span>mihomo-web</span>
+      </a>
+      <nav class="nav-links">
+        <a href="/home" data-page="overview">概览</a>
+        <a href="/proxies" data-page="proxies">代理</a>
+        <a href="/rules" data-page="rules">规则</a>
+        <a href="/connections" data-page="connections">连接</a>
+        <a href="/logs" data-page="logs">日志</a>
+        <a href="/backends" data-page="backends">后端</a>
+        <a href="/config" data-page="config">配置</a>
+        <a href="/about" data-page="about">关于</a>
+      </nav>
+      <div class="nav-foot">
+        <button class="ghost" id="theme-toggle" type="button" aria-label="切换主题"><svg class="icon-auto" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20Z" fill="currentColor"/></svg><svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+        {{if .ReadOnly}}<span class="pill">只读</span>{{end}}
+      </div>
+    </header>
+    {{end}}
+    <main class="content {{if eq .Page "login"}}login-content{{end}}">
+      {{if eq .Page "login"}}{{template "login" .}}{{end}}
+      {{if eq .Page "overview"}}{{template "overview" .}}{{end}}
+      {{if eq .Page "proxies"}}{{template "proxies" .}}{{end}}
+      {{if eq .Page "rules"}}{{template "rules" .}}{{end}}
+      {{if eq .Page "connections"}}{{template "connections" .}}{{end}}
+      {{if eq .Page "logs"}}{{template "logs" .}}{{end}}
+      {{if eq .Page "backends"}}{{template "backends" .}}{{end}}
+      {{if eq .Page "config"}}{{template "config" .}}{{end}}
+      {{if eq .Page "about"}}{{template "about" .}}{{end}}
+    </main>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
+{{end}}
