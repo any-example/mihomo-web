@@ -1325,15 +1325,18 @@
 
   function size(n) {
     n = Number(n || 0);
-    if (n > 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MiB';
-    if (n > 1024) return (n / 1024).toFixed(1) + ' KiB';
+    if (n >= 1024 * 1024 * 1024 * 1024) return (n / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TiB';
+    if (n >= 1024 * 1024 * 1024) return (n / 1024 / 1024 / 1024).toFixed(2) + ' GiB';
+    if (n >= 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MiB';
+    if (n >= 1024) return (n / 1024).toFixed(1) + ' KiB';
     return n + ' B';
   }
 
   function rateSize(n) {
     n = Number(n || 0);
-    if (n > 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MiB';
-    if (n > 1024) return (n / 1024).toFixed(1) + ' KiB';
+    if (n >= 1024 * 1024 * 1024) return (n / 1024 / 1024 / 1024).toFixed(2) + ' GiB';
+    if (n >= 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MiB';
+    if (n >= 1024) return (n / 1024).toFixed(1) + ' KiB';
     return n.toFixed(1) + ' B';
   }
 

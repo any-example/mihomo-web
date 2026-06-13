@@ -326,21 +326,28 @@ button, input, select { font: inherit; }
 }
 
 .proxy-icon-button::before {
-  inset: 10px 12px auto;
-  height: 2px;
-  background: #43506a;
-  border-radius: 999px;
-  box-shadow: 0 8px 0 #43506a;
+  content: "";
+  position: absolute;
+  top: 11px;
+  left: 10px;
+  width: 18px;
+  height: 18px;
+  border: 2.2px solid #43506a;
+  border-right-color: transparent;
+  border-radius: 50%;
 }
 
 .proxy-icon-button::after {
-  top: 8px;
-  right: 10px;
-  width: 6px;
-  height: 6px;
-  background: #43506a;
-  border-radius: 50%;
-  box-shadow: -10px 8px 0 #43506a;
+  content: "";
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 7px solid #43506a;
+  transform: rotate(22deg);
 }
 
 .proxy-view { display: none; }
