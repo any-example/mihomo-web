@@ -12,7 +12,8 @@ RUN CGO_ENABLED=0 go build -ldflags "-s -w \
   -X main._date=${DATE}" \
   -o /mihomo-web ./cmd/mihomo-web
 
-FROM scratch
-COPY --from=builder /mihomo-web /mihomo-web
+FROM alpine:latest
+RUN apk add --no-cache ca-certificates
+COPY --from=builder /mihomo-web /usr/local/bin/mihomo-web
 EXPOSE 8080
-ENTRYPOINT ["/mihomo-web"]
+ENTRYPOINT ["mihomo-web"]
